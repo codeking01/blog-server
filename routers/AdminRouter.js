@@ -4,6 +4,7 @@ const {db, genid} = require("../db/DbUtils")
 // 引入uuid
 const {v4: uuidv4} = require("uuid"); // mode uuid 教程
 
+// 登录
 routers.post('/login', async (req, res) => {
     let {account, password} = req.body;
     let {err,rows} = await db.async.all("select * from `admin` where `account`=? and `password`=?", [account, password]);
@@ -19,6 +20,24 @@ routers.post('/login', async (req, res) => {
             code: 200,
             msg: "登陆成功！",
             data: admin_info
+        })
+    } else {
+        res.send({
+            code: 500,
+            msg: err
+        })
+    }
+})
+
+// 注册
+routers.post('/register', async (req, res) => {
+    let {account, password} = req.body;
+    let id =genid.NextId()
+    let {err} = await db.async.run("insert into `admin` (`id`,`account`,`password`) values (?,?,?)", [id,account, password]);
+    if (err == null ) {
+        res.send({
+            code: 200,
+            msg: "注册成功！",
         })
     } else {
         res.send({

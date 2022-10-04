@@ -5,7 +5,7 @@ const {db, genid} = require("../db/DbUtils")
 // 查找单一文章的接口
 blog_routers.get('/details', async (req, res) => {
     let id = req.query.id;
-    let details_sql = "select * from `blog` where `id`= ? "
+    let details_sql = "select `blog`.`id` as 'blog_id',* from `blog` JOIN `category` on  `category`.`id` == `blog`.`category_id` where `blog`.`id`=? "
     let {err, rows} = await db.async.all(details_sql, [id])
     if (err == null) {
         res.send({
